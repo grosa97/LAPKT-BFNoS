@@ -61,7 +61,7 @@ By default, BFNoS is used as a front-end solver that falls back to a backend pla
 
 		std::exit(14); //for external backend planners
 
-- To run **BFNoS-Dual**, that is BFNoS with a Dual-BFWS backend, comment line **line 348**.
+- To run **BFNoS-Dual**, that is BFNoS with a Dual-BFWS backend, comment **line 348**.
 
 - **To run the BFNoS frontend on its own**, comment **lines 345 to 376**, ensuring that the time and memory budget are set as desired. Normally this would be done not using either threshold, as the overall time limit is set by the experimental setup.
 
