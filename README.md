@@ -65,7 +65,7 @@ By default, BFNoS is used as a front-end solver that falls back to a backend pla
 
 - **To run the BFNoS frontend on its own**, comment **lines 345 to 376**, ensuring that the time and memory budget are set as desired. Normally this would be done not using either threshold, as the overall time limit is set by the experimental setup.
 
-We recommend using [Downward-Lab](https://lab.readthedocs.io/en/stable/index.html) for conducting experiments.
+We recommend using [Lab](https://lab.readthedocs.io/en/stable/index.html) for conducting experiments.
 
 LAPKT
 =====
