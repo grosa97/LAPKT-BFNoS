@@ -6,7 +6,7 @@
 <!--- ![bfnos-pic-1](https://github.com/grosa97/LAPKT-BFNoS/assets/43338224/db1c4e08-61ed-406d-8386-4b83f3715298) --->
 ![bfnos-pic-1-tilted](https://github.com/grosa97/LAPKT-BFNoS/assets/43338224/98d97dda-59f1-40e5-a9df-2e4fbbaab215)
 
-<sub>The NOS&reg; logo is a registered trademark of the Nitrous Oxide Systems (NOS) company and is used here for illustrative purposes only.</sub>
+<sub>The NOS&reg; logo is a registered trademark of the Nitrous Oxide Systems (NOS) company and is used here for illustrative purposes only (because it looks cool). The work presented here is in no way affiliated to the Nitrous Oxide Systems (NOS) company.</sub>
 
 This repository contains a modified version of LAPKT-2.0 that implements the **BFNoS (Best First Novelty Search)** planner, as described in the paper <_paper still under review for publication_>. The solver is mainly included for reproducibility, and (for now) only includes a preliminary implementation, which is not as accessible as other BFWS planners included in the library. That is, a few commands and parameters are hard-coded and must be modified directly in the code, rather than being tunable through the execution command. Following is a brief introduction to run the model and modify the various features.
 
