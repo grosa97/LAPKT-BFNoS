@@ -8,9 +8,7 @@
 
 <sub>The NOS&reg; logo is a registered trademark of the Nitrous Oxide Systems (NOS) company and is used here for illustrative purposes only (because it looks cool). The work presented here is in no way affiliated to the Nitrous Oxide Systems (NOS) company.</sub>
 
-This repository contains a modified version of LAPKT-2.0 that implements the **BFNoS (Best First Novelty Search)** planner, as described in the paper <_paper still under review for publication_>. The solver is mainly included for reproducibility, and (for now) only includes a preliminary implementation, which is not as accessible as other BFWS planners included in the library. That is, a few commands and parameters are hard-coded and must be modified directly in the code, rather than being tunable through the execution command. Following is a brief introduction to run the model and modify the various features.
-
-
+This repository contains a modified version of LAPKT-2.0 that implements the **BFNoS (Best First Novelty Search)** planner, as described in the paper [_Count-based Novelty Exploration in Classical Planning_](https://doi.org/10.3233/FAIA240990), presented at the _27th European Conference on Artificial Intelligence_ (ECAI). The solver is mainly included for reproducibility, and (for now) only includes a preliminary implementation, which is not as accessible as other BFWS planners included in the library. That is, a few commands and parameters are hard-coded and must be modified directly in the code, rather than being tunable through the execution command. Following is a brief introduction to run the model and modify the various features.
 
 
 <ins>**Installation**
@@ -66,6 +64,31 @@ By default, BFNoS is used as a front-end solver that falls back to a backend pla
 - **To run the BFNoS frontend on its own**, comment **lines 345 to 376**, ensuring that the time and memory budget are set as desired. Normally this would be done not using either threshold, as the overall time limit is set by the experimental setup.
 
 We recommend using [Lab](https://lab.readthedocs.io/en/stable/index.html) for conducting experiments.
+
+AUTHORS
+-------
+
+- Giacomo Rosa <rosag@student.unimelb.edu.au>
+- Nir Lipovetzky <nirlipo@gmail.com>
+
+
+CITE
+----
+
+- G. Rosa and N. Lipovetzky. Count-based Novelty Exploration in Classical Planning. In _Proceedings of the 50th European Conference on Artificial Intelligence_, vol. 392, pp. 4181-4189, 2024.
+
+
+		@inproceedings{rosa2024count,
+		  title={Count-based novelty exploration in classical planning},
+		  author={Rosa, Giacomo and Lipovetzky, Nir},
+		  booktitle={Proceedings of the European Conference on Artificial Intelligence},
+		  volume={392},
+		  pages={4181--4189},
+		  year={2024}
+		}
+
+
+
 
 LAPKT
 =====
