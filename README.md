@@ -75,7 +75,7 @@ AUTHORS
 CITE
 ----
 
-- G. Rosa and N. Lipovetzky. Count-based Novelty Exploration in Classical Planning. In _Proceedings of the 50th European Conference on Artificial Intelligence_, vol. 392, pp. 4181-4189, 2024.
+- G. Rosa and N. Lipovetzky. Count-based Novelty Exploration in Classical Planning. In _Proceedings of the 27th European Conference on Artificial Intelligence_, vol. 392, pp. 4181-4189, 2024.
 
 
 		@inproceedings{rosa2024count,
