@@ -313,7 +313,7 @@ namespace aptk
 						: m_problem(search_problem), m_expanded_count_by_novelty(nullptr), m_generated_count_by_novelty(nullptr), m_novelty_count_plan(nullptr), 
 						m_exp_count(0), m_gen_count(0), m_dead_end_count(0), m_open_repl_count(0), m_max_depth(infty), m_max_novelty(1), m_time_budget(infty), m_lgm(NULL), 
 						m_max_h2n(no_such_index), m_max_r(no_such_index), m_verbose(verbose), m_use_novelty(false), m_use_novelty_pruning(false), m_use_rp(true), m_use_rp_from_init_only(false), 
-						m_use_h2n(false), m_use_h3n(false), m_h3_rp_fl_only(false), m_sign_count(0), m_num_lf_p(0), m_memory_budget(0),
+						m_use_h2n(false), m_h3_rp_fl_only(false), m_sign_count(0), m_num_lf_p(0), m_memory_budget(0),
 						m_memory_stop(false), m_alt(false)//, m_h3_only_max_nov(true)
 				{
 
@@ -529,7 +529,7 @@ namespace aptk
 					m_root = new Search_Node(m_problem.init(), 0.0f, no_op, NULL, m_problem.num_actions());
 					// Init Novelty
 					m_third_h->init();
-					m_first_h->set_rp_fl_only(m_h3_rp_fl_only);
+					// m_first_h->set_rp_fl_only(m_h3_rp_fl_only);
 
 					if (m_use_rp)
 						set_relplan(this->m_root, this->m_root->state());
@@ -566,8 +566,6 @@ namespace aptk
 
 						m_root->undo_land_graph(m_lgm);
 
-						// if (m_use_h3n)
-						// 	eval_count_based(m_root);
 					}
 					else
 
@@ -579,12 +577,10 @@ namespace aptk
 							eval_rp(m_root);
 							eval_relevant_fluents(m_root);
 						}
-
+						eval_count_based(m_root);
 						if (m_use_novelty)
 							eval_novel(m_root);
 						
-						// if (m_use_h3n)
-							// eval_count_based(m_root);
 					}
 					// int tv = get_lifted_counts_state(m_root);
 					// std::cout << "DEBUG: " << tv <<std::endl;
@@ -1243,9 +1239,6 @@ namespace aptk
 								}
 						}
 
-						// if (m_use_h3n) 
-						// 	eval_count_based(n);
-
 #ifdef DEBUG
 						if (m_verbose)
 							std::cout << "Inserted into OPEN" << std::endl;
@@ -1369,10 +1362,12 @@ namespace aptk
 				}
 
 				void set_arity(float v, unsigned g = 0) { 
-					m_first_h->set_arity(1, g); 
-					m_third_h->set_arity(2, g);
-					
+					m_third_h->set_arity(v, g);
 					}
+
+				void set_arity_count(float v, unsigned g = 0) {
+					m_first_h->set_arity(v, g);
+				}
 				// void set_arity_h3(float v, unsigned g = 0) { m_third_h->set_arity(v, g); }
 				void set_max_novelty(unsigned v)
 				{
@@ -1410,11 +1405,13 @@ namespace aptk
 				void set_alt(bool b) { m_alt = b; }
 
 				void set_use_h2n(bool v) {m_use_h2n = v; }
-				// void set_use_h3n(bool v) { m_use_h3n = v; }
 				// void set_use_h3_only_max_nov(bool v) { m_h3_only_max_nov = v; }
+
+				// current cbn heuristic version has code related to rp_fl_only commented, purpose
+				// was to only evaluate counts of fluents that are present in the #r relaxed plan
 				void set_use_count_rp_fl_only(bool v) {
 					m_h3_rp_fl_only = true;
-					m_first_h->set_rp_fl_only(m_h3_rp_fl_only);
+					m_first_h->set_rp_fl_only(m_h3_rp_fl_only); //currently does nothing
 				}
 
 				unsigned get_max_novelty_expanded()
@@ -1545,7 +1542,6 @@ namespace aptk
 				bool m_use_rp_from_init_only;
 
 				bool m_use_h2n;
-				bool m_use_h3n;
 				// bool m_h3_only_max_nov;
 				bool m_h3_rp_fl_only;
 

@@ -55,7 +55,30 @@ void BFWS::bfws_options(Fwd_Search_Problem &search_prob, Search_Engine &bfs_engi
 	const aptk::State *s_0 = search_prob.init();
 	hadd.eval(*s_0, h_init);
 
-	bfs_engine.set_arity(max_novelty, graph.num_landmarks() * h_init); //novelty hardcoded to 1 and 2 for count & normal novelty respectively
+	bfs_engine.set_arity(max_novelty, graph.num_landmarks() * h_init);
+}
+
+template <typename Search_Engine>
+void BFWS::bfcs_options(Fwd_Search_Problem &search_prob, Search_Engine &bfs_engine, unsigned max_novelty_width, unsigned max_novelty_count, Landmarks_Graph &graph)
+{
+
+	bfs_engine.set_max_novelty(max_novelty_width);
+	bfs_engine.set_use_novelty(true);
+	bfs_engine.rel_fl_h().ignore_rp_h_value(true);
+
+	// NIR: engine doesn't own the pointer, need to free at the end
+	Land_Graph_Man *lgm = new Land_Graph_Man(search_prob, &graph);
+	bfs_engine.use_land_graph_manager(lgm);
+
+	// NIR: Approximate the domain of #r counter, so we can initialize the novelty table, making sure we've got
+	//      space for novelty > 1 tuples
+	H_Add_Rp_Fwd hadd(search_prob);
+	float h_init = 0;
+	const aptk::State *s_0 = search_prob.init();
+	hadd.eval(*s_0, h_init);
+
+	bfs_engine.set_arity(max_novelty_width, graph.num_landmarks() * h_init); 
+	bfs_engine.set_arity_count(max_novelty_count, graph.num_landmarks() * h_init);
 }
 
 template <typename Search_Engine>
@@ -329,13 +352,12 @@ void BFWS::solve()
 		BFCS_1_p_pruned bfs_engine(search_prob, m_verbose);
 
 		unsigned max_width = 2;
-		bfws_options(search_prob, bfs_engine, max_width, graph);
-		bfs_engine.set_use_h2n(true);
-		// bfs_engine.set_use_h3n(true);
+		unsigned max_count_arity = 1;
+		bfcs_options(search_prob, bfs_engine, max_width, max_count_arity, graph);
+		bfs_engine.set_use_h2n(true); //use secondary GC heuristic (in both open lists)
 		bfs_engine.set_budget(1600);
 		
 		float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
 
 		bfs_engine.delete_heuristics();
 
@@ -377,100 +399,6 @@ void BFWS::solve()
 
 
 	}
-	else if (m_search_alg.compare("BFCS-1-rp") == 0)
-	{
-
-		std::cout << "Starting search with BFWS-f5-h3count-p..." << std::endl;
-
-		BFCS_1_p_pruned bfs_engine(search_prob, m_verbose);
-
-		unsigned max_width = 1;
-		bfws_options(search_prob, bfs_engine, max_width, graph);
-
-		bfs_engine.set_use_count_rp_fl_only(true);
-		// bfs_engine.set_use_h3n(true);
-
-
-		float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
-		std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
-	}
-	else if (m_search_alg.compare("BFCS-1-p") == 0)
-	{
-		////PARTITIONED BUT WITH H2 TIE BREAK
-		std::cout << "Starting search with BFWS-f5-h3count-p..." << std::endl;
-
-		BFCS_1_p_pruned bfs_engine(search_prob, m_verbose);
-
-		unsigned max_width = 1;
-		bfws_options(search_prob, bfs_engine, max_width, graph);
-		bfs_engine.set_use_h2n(true);
-
-		// /**
-		//  * Use landmark count instead of goal count
-		//  */
-		// Gen_Lms_Fwd gen_lms(search_prob);
-		// gen_lms.set_only_goals(false);
-		// Landmarks_Graph graph1(*prob);
-		// gen_lms.compute_lm_graph_set_additive(graph1);
-
-		// bfws_options(search_prob, bfs_engine, max_width, graph1);
-		// bfs_engine.set_use_h3n(true);
-
-		float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
-		std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
-	}
-	else if (m_search_alg.compare("BFCS-1-p-rp") == 0)
-	{
-
-		std::cout << "Starting search with BFWS-f5-h3count-p..." << std::endl;
-
-		BFCS_1_p_pruned bfs_engine(search_prob, m_verbose);
-
-		unsigned max_width = 1;
-		bfws_options(search_prob, bfs_engine, max_width, graph);
-
-		bfs_engine.set_use_count_rp_fl_only(true);
-		// bfs_engine.set_use_h3n(true);
-
-		float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
-		std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
-	}
-	// else if (m_search_alg.compare("BFWS-f5-h3count-p-rp") == 0)
-	// {
-
-	// 	std::cout << "Starting search with BFWS-f5-h3count-p-rp..." << std::endl;
-
-	// 	custom_BFWS_p bfs_engine(search_prob, m_verbose);
-
-	// 	bfws_options(search_prob, bfs_engine, m_max_novelty, graph);
-
-	// 	bfs_engine.set_use_h3n(true);
-	// 	bfs_engine.set_use_h3_rp_fl_only(true);
-
-	// 	float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
-	// 	std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
-	// }
-	// else if (m_search_alg.compare("BFWS-f5-h3count-p-rp-allh3") == 0)
-	// {
-
-	// 	std::cout << "Starting search with BFWS-f5-h3count-p-rp-allh3..." << std::endl;
-
-	// 	custom_BFWS_p bfs_engine(search_prob, m_verbose);
-
-	// 	bfws_options(search_prob, bfs_engine, m_max_novelty, graph);
-
-	// 	bfs_engine.set_use_h3n(true);
-	// 	bfs_engine.set_use_h3_rp_fl_only(true);
-	// 	bfs_engine.set_use_h3_only_max_nov(false); //use h3 to break all ties, not just max novelty ties
-
-	// 	float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
-	// 	std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
-	// }
 	else if (m_search_alg.compare("BFWS-f5") == 0)
 	{
 

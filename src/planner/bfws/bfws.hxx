@@ -233,6 +233,9 @@ protected:
 	void bfws_options(Fwd_Search_Problem &search_prob, Search_Engine &bfs_engine, unsigned max_novelty, Landmarks_Graph &graph);
 
 	template <typename Search_Engine>
+	void bfcs_options(Fwd_Search_Problem &search_prob, Search_Engine &bfs_engine, unsigned max_novelty_width, unsigned max_novelty_count, Landmarks_Graph &graph);
+
+	template <typename Search_Engine>
 	float do_search(Search_Engine &engine, aptk::STRIPS_Problem &plan_prob, std::ofstream &plan_stream);
 
 	float do_anytime(Anytime_RWA &engine);
