@@ -355,7 +355,11 @@ void BFWS::solve()
 		unsigned max_count_arity = 1;
 		bfcs_options(search_prob, bfs_engine, max_width, max_count_arity, graph);
 		bfs_engine.set_use_h2n(true); //use secondary GC heuristic (in both open lists)
-		bfs_engine.set_budget(1600);
+
+		if (m_time_limit > 0)
+			bfs_engine.set_budget(m_time_limit);
+		if (m_memory_limit > 0)
+			bfs_engine.set_memory_budget_mb(m_memory_limit);
 		
 		float bfs_t = do_search(bfs_engine, *prob, plan_stream);
 
@@ -364,11 +368,13 @@ void BFWS::solve()
 		std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
 
 
-		if (!m_found_plan && (m_search_alg.compare("BFCS-1") == 0))
+		if (m_fallback_backend && !m_found_plan && (m_search_alg.compare("BFCS-1") == 0))
 		{
-
-			std::exit(14); //for external backend planners
-
+			// if external planner is used, exit with code 14 signal
+			if (m_backend_type == "EXTERNAL")
+				std::exit(14); //for external backend planners
+			
+			//else backend defaults to DUAL-BFWS backend
 			std::cout << "Starting search with BFWS(novel,land,h_ff)..." << std::endl;
 
 			BFWS_w_hlm_hadd bfs_engine(search_prob, m_verbose);
