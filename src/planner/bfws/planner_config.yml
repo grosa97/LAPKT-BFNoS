@@ -35,7 +35,7 @@ BFWS:
     var_name: 'plan_filename'
   search_type: 
     cmd_arg: 
-      default: 'BFCS-1' #
+      default: 'BFNOS' #
       required: False
       choices:
         - 'BFWS-f5-landmarks'
@@ -52,10 +52,10 @@ BFWS:
         - 'DUAL-C-BFWS'
         - 'DUAL-BFWS'
         - 'BFWS-goalcount-h3blind'
-        - 'BFCS-1'
-        - 'BFCS-1-rp'
-        - 'BFCS-1-p'
-        - 'BFCS-1-p-rp'
+        - 'BFNOS'
+        # - 'BFCS-1-rp'
+        # - 'BFCS-1-p'
+        # - 'BFCS-1-p-rp'
 
         # - 'BFWS-f5-h3count-p'
         # - 'BFWS-f5-h3count-p-rp'
@@ -141,4 +141,22 @@ BFWS:
       action  : 'store'
       help    : 'Select backend planner options'
     var_name: 'backend_type'
+  tol_max_depth:
+    cmd_arg: 
+      default : 18
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'max depth of trimmed open list'  
+    var_name: 'tol_max_depth'
+  tol_seed:
+    cmd_arg: 
+      default : 42
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'seed for trimmed open list'
+    var_name: 'tol_seed'
 #END - Leave this line a empty line as it is

@@ -231,6 +231,8 @@ public:
 	int m_time_limit;
 	bool m_fallback_backend;
 	std::string m_backend_type;
+	int m_tol_max_depth;
+	int m_tol_seed;
 
 protected:
 	template <typename Search_Engine>

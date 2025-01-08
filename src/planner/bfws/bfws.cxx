@@ -314,50 +314,21 @@ void BFWS::solve()
 
 		std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
 	}
-	// CUSTOM 1
-	// else if (m_search_alg.compare("BFWS-goalcount-h3blind") == 0)
-	// {
-	// 	std::cout << "Starting search with BFWS(w_(#G), #G, [#C | nov>w])...";
-	
-	// 	custom_BFWS bfs_engine(search_prob, m_verbose);
 
-	// 	bfws_options(search_prob, bfs_engine, m_max_novelty, graph);
-
-	// 	// Do not use #rp
-	// 	bfs_engine.set_use_rp(false);
-
-	// 	// Use h3n for nodes with novelty > max_nov
-	// 	bfs_engine.set_use_h3n(true);
-
-	// 	float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
-	// 	std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
-
-	// }
-	else if (m_search_alg.compare("BFCS-1") == 0)
+	else if (m_search_alg.compare("BFNOS") == 0)
 	{
-		// std::cout << "Starting search with BFCS-1..." << std::endl;
-
-		// BFCS_1 bfs_engine(search_prob, m_verbose);
-
-		// unsigned max_width = 1;
-		// bfws_options(search_prob, bfs_engine, max_width, graph);
-
-		// // bfs_engine.set_use_h3n(true);
-		// float bfs_t = do_search(bfs_engine, *prob, plan_stream);
-
-		// std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
-
-		//PARTITIONED BUT WITH NO H2 TIE BREAK
 		BFCS_1_p_pruned bfs_engine(search_prob, m_verbose);
 
 		unsigned max_width = 2;
 		unsigned max_count_arity = 1;
 		bfcs_options(search_prob, bfs_engine, max_width, max_count_arity, graph);
-		bfs_engine.set_use_h2n(true); //use secondary GC heuristic (in both open lists)
 
+		//other bfcs options
+		bfs_engine.set_tol_max_depth(m_tol_max_depth);
+		bfs_engine.set_tol_seed(m_tol_seed);
+		bfs_engine.set_use_h2n(true); //use secondary GC heuristic (in both open lists)
 		if (m_time_limit > 0)
-			bfs_engine.set_budget(1600);
+			bfs_engine.set_budget(m_time_limit);
 		if (m_memory_limit > 0)
 			bfs_engine.set_memory_budget_mb(m_memory_limit);
 		
@@ -368,7 +339,7 @@ void BFWS::solve()
 		std::cout << "Fast-BFS search completed in " << bfs_t << " secs" << std::endl;
 
 
-		if (m_fallback_backend && !m_found_plan && (m_search_alg.compare("BFCS-1") == 0))
+		if (m_fallback_backend && !m_found_plan && (m_search_alg.compare("BFNOS") == 0))
 		{
 			// if external planner is used, exit with code 14 signal
 			if (m_backend_type == "EXTERNAL")
