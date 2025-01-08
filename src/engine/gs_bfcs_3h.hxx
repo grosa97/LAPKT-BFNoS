@@ -164,7 +164,7 @@ namespace aptk
 				void set_expanded() { m_already_expanded=true; }
 				bool already_expanded() { return m_already_expanded; }
 				// bool is_alt() { return m_alt; }
-				// void set_alt() { m_alt = true; }
+				// void set_alt() { m_alt = true; }	
 
 				// Used to update novelty table
 				bool is_better(Node *n) const
@@ -325,8 +325,8 @@ namespace aptk
 					m_relevant_fluents_h = new Relevant_Fluents_Heuristic(search_problem);
 
 					//max depth determined size of list (2^17 = 262143)					
-					int OPEN_MAX_DEPTH =18;
-					m_open.init(OPEN_MAX_DEPTH);
+					// int OPEN_MAX_DEPTH =18;
+					// m_open.init(OPEN_MAX_DEPTH);
 
 					std::unordered_set<std::string> unique_signatures;
 					m_fluent_to_feature.resize(this->problem().task().num_fluents());
@@ -595,6 +595,7 @@ namespace aptk
 						std::cout << std::endl;
 					}
 #endif
+
 					m_open.insert(m_root);
 
 					// m_generated_count_by_novelty[m_root->h1n() - 1]++;
@@ -756,20 +757,6 @@ namespace aptk
 				{
 					candidate->partition() = (1000 * candidate->GC()) + candidate->r();
 					m_first_h->eval(candidate, candidate->h1n());		
-					// candidate->h3n() = candidate->h1n();
-
-
-					// if (candidate->h1n() > m_max_novelty)
-					// {
-					// 	m_third_h->eval(candidate, candidate->h1n());
-					// }
-					// else
-					// {
-					// 	if (m_h3_only_max_nov)
-					// 		m_third_h->update_counts(candidate);
-					// 	else
-					// 		m_third_h->eval(candidate, candidate->h1n());
-					// }	
 				}
 
 				void eval_lf_counts(Search_Node* n)
@@ -1454,6 +1441,9 @@ namespace aptk
 
 				void set_memory_budget_mb(int v) { m_memory_budget = v; }
 				int memory_budget_mb() const { return m_memory_budget; }
+
+				void set_tol_max_depth(int d) { m_open.init(d); }
+				void set_tol_seed(int s) { m_open.set_seed(s); }
 
 				float t0() const { return m_t0; }
 
