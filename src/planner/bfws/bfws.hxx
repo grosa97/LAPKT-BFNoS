@@ -227,6 +227,10 @@ public:
 	float m_cost;
 	float m_cost_bound;
 	bool m_verbose = false;
+	int m_memory_limit;
+	int m_time_limit;
+	bool m_fallback_backend;
+	std::string m_backend_type;
 
 protected:
 	template <typename Search_Engine>

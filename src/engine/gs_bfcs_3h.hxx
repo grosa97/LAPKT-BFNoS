@@ -317,7 +317,7 @@ namespace aptk
 						m_memory_stop(false), m_alt(false)//, m_h3_only_max_nov(true)
 				{
 
-					m_memory_budget = 6000;
+					// m_memory_budget = 6000;
 
 					m_first_h = new First_Heuristic(search_problem);
 					m_second_h = new Second_Heuristic(search_problem);
@@ -1245,9 +1245,9 @@ namespace aptk
 #endif
 
 						static struct rusage usage_report;
-						if (generated() % 1000 == 0){
+						if (memory_budget_mb() > 0 && generated() % 1000 == 0){
 							getrusage(RUSAGE_SELF, &usage_report);
-							if ((usage_report.ru_maxrss / 1024) > m_memory_budget) {
+							if ((usage_report.ru_maxrss / 1024) > memory_budget_mb()) {
 
 							std::cout<<"DEBUG: MEMORY MEASUREMENT EXCEED LIMIT: "<<(usage_report.ru_maxrss / 1024)<<std::endl;
 							std::cout << "Expanded: "<<expanded()<<"\tGenerated: "<<generated()<<std::endl; 
@@ -1451,6 +1451,9 @@ namespace aptk
 
 				void set_budget(float v) { m_time_budget = v; }
 				float time_budget() const { return m_time_budget; }
+
+				void set_memory_budget_mb(int v) { m_memory_budget = v; }
+				int memory_budget_mb() const { return m_memory_budget; }
 
 				float t0() const { return m_t0; }
 
