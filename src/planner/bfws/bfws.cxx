@@ -354,10 +354,13 @@ void BFWS::solve()
 		unsigned max_width = 2;
 		unsigned max_count_arity = 1;
 		bfcs_options(search_prob, bfs_engine, max_width, max_count_arity, graph);
-		bfs_engine.set_use_h2n(true); //use secondary GC heuristic (in both open lists)
 
+		//other bfcs options
+		bfs_engine.set_tol_max_depth(m_tol_max_depth);
+		bfs_engine.set_tol_seed(m_tol_seed);
+		bfs_engine.set_use_h2n(true); //use secondary GC heuristic (in both open lists)
 		if (m_time_limit > 0)
-			bfs_engine.set_budget(1600);
+			bfs_engine.set_budget(m_time_limit);
 		if (m_memory_limit > 0)
 			bfs_engine.set_memory_budget_mb(m_memory_limit);
 		

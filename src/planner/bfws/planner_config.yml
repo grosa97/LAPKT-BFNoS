@@ -141,4 +141,22 @@ BFWS:
       action  : 'store'
       help    : 'Select backend planner options'
     var_name: 'backend_type'
+  tol_max_depth:
+    cmd_arg: 
+      default : 18
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'max depth of trimmed open list'  
+    var_name: 'tol_max_depth'
+  tol_seed:
+    cmd_arg: 
+      default : 42
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'seed for trimmed open list'
+    var_name: 'tol_seed'
 #END - Leave this line a empty line as it is
