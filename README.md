@@ -6,62 +6,57 @@
 <!--- ![bfnos-pic-1](https://github.com/grosa97/LAPKT-BFNoS/assets/43338224/db1c4e08-61ed-406d-8386-4b83f3715298) --->
 ![bfnos-pic-1-tilted](https://github.com/grosa97/LAPKT-BFNoS/assets/43338224/98d97dda-59f1-40e5-a9df-2e4fbbaab215)
 
-<sub>The NOS&reg; logo is a registered trademark of the Nitrous Oxide Systems (NOS) company and is used here for illustrative purposes only (because it looks cool). The work presented here is in no way affiliated to the Nitrous Oxide Systems (NOS) company.</sub>
+<sub><sub>The NOS&reg; logo is a registered trademark of the Nitrous Oxide Systems (NOS) company and is used here for illustrative purposes only (because it looks cool). The work presented here is in no way affiliated to the Nitrous Oxide Systems (NOS) company.</sub></sub>
 
-This repository contains a modified version of LAPKT-2.0 that implements the **BFNoS (Best First Novelty Search)** planner, as described in the paper [_Count-based Novelty Exploration in Classical Planning_](https://doi.org/10.3233/FAIA240990), presented at the _27th European Conference on Artificial Intelligence_ (ECAI). The solver is mainly included for reproducibility, and (for now) only includes a preliminary implementation, which is not as accessible as other BFWS planners included in the library. That is, a few commands and parameters are hard-coded and must be modified directly in the code, rather than being tunable through the execution command. Following is a brief introduction to run the model and modify the various features.
+This repository contains a modified version of LAPKT-2.0 that implements the **BFNoS (Best First Novelty Search)** planner, as described in the paper [_Count-based Novelty Exploration in Classical Planning_](https://doi.org/10.3233/FAIA240990), presented at the _27th European Conference on Artificial Intelligence_ (ECAI). Following is a brief introduction to run the model and modify the various features.
 
+<ins>**Versions**
+- The **ecai24** branch contains the version of BFNoS specified in the [paper](https://doi.org/10.3233/FAIA240990).
+- The **main** branch includes additional improvements that may be added to the model over time. Currently these improvements include:
+	- _Open-list partitioning of novelty_: Improves coverage of both stand-alone BFNoS and dual-planner configurations by ~10 instances compared to the ecai24 version, in the same benchmark used in the paper.
 
 <ins>**Installation**
 
-Build LAPKT by following the [Build instructions](developersguide/build.md). It is required to also install the Tarski parser and grounder for this solver, as described in the developers guide. Even though the FD grounder is used by default, LAPKT currently does not support axioms produced by the FD grounder for a small number of problems, and in such cases it automatically detects the axioms and falls back to the Tarski grounder.
+Build LAPKT by following the [Build instructions](developersguide/build.md). It is **required to also install the Tarski parser and grounder for this solver**, as described in the developers guide. Even though the FD grounder is used by default, LAPKT currently does not support axioms produced by the FD grounder for a small number of problems, and in such cases it automatically detects the axioms and falls back to the Tarski grounder.
+
+**Important**: Additional requirements before building.
+
+- Update submodule, run from base directory:
+		
+		git submodule update --init --recursive
+	
+	This is because *external_package/fd_translate* was updated compared to the main LAPKT 2.0 repo.
+
+- Also required for build:
+	
+		pip install python-is-python3
+	
+	Because somewhere in the new _fd_translate_ files, _python_ is used instead of _python3_, so this is a suboptimal and temporary fix.
+
+
 
 <ins>**Run the $BFNoS_t(f_5(C_1),f_5(W_2))$ solver with FD grounder:**
 
-		python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFCS-1
+	python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFNOS [options]
 
-Note: BFCS-1 refers to BFNoS, the name mismatch is derived from the testing code, and will be changed in the future.
-
-<ins>**Memory budget**
-
-By default, a memory threshold of 6000MB is hard-coded:
-		
-  	m_memory_budget = 6000;
-   
- This may be modified in **line 320** in the [src/engine/gs_bfcs_3h.hxx](src/engine/gs_bfcs_3h.hxx). 
- 
- Alternatively, to remove the memory budget, **lines 1254 to 1263** can be commented.
-
-<ins>**Time budget**</ins>
-
- Time budget is set in line 335 in [src/planner/bfws/bfws.cxx](src/planner/bfws/bfws.cxx).
-
- 	bfs_engine.set_budget(1600);
-
-This line can be commented out if you wish to not use a time budget.
-
-<ins>**Trimmed Open List**</ins>
-
-- **Modifying the max depth of the trimmed open list** can be done by modifying **line 328** in [src/engine/gs_bfcs_3h.hxx](src/engine/gs_bfcs_3h.hxx):
-
-		int OPEN_MAX_DEPTH = 18;
+   	Options:
+      -- time_limit [int]		Memory threshold in MB, 0 is no threshold (default: 0).
+      -- memory_limit [int]		Time threshold in seconds, 0 is no threshold (default: 0).
+      -- fallback_backend		Fallback to backend planner for dual-solver configuration (default: off).
+      -- backend_type [string]	Specify backend type (default: DUAL-BFWS). Other option is EXTERNAL.
+      -- tol_max_depth [int]	Trimmed open list max depth (default: 18).
+      -- tol_seed [int]		Trimmed open list seed (default: 42).
 
 
-- The Double Trimmed Open List itself is included as a class in [src/component/open_list.hxx](src/component/open_list.hxx), under the name "Double_Custom_Priority_Queue". 
-**Setting the random seed** can be done by modifying the value in **line 159**:
 
-		std::mt19937::result_type seed = 42;
 
-<ins>**BFNoS Frontend Fallback**
+<ins>**BFNoS External Backend Fallback**
 
-By default, BFNoS is used as a front-end solver that falls back to a backend planner when exceeding the preset time or memory budget. 
- 
- - **By default** when exceeding the thresholds, it returns a specific exit code, which may be caught by an external script to launch the backend solver. The code may be set at **line 348** in [src/planner/bfws/bfws.cxx](src/planner/bfws/bfws.cxx):
+The `--fallback_backend` command allows BFNoS to be used as a front-end solver that falls back to a backend planner when exceeding the preset time or memory budget. Using an external backend planner requires `--backend_type EXTERNAL`. This will return a specific exit code if the frontend solver terminates without finding a solution, which may be caught by an external script to launch the backend solver. Default error code is 14. The code may be set at **line 367** in [src/planner/bfws/bfws.cxx](src/planner/bfws/bfws.cxx):
 
-		std::exit(14); //for external backend planners
+	std::exit(14); //for external backend planners
 
-- To run **BFNoS-Dual**, that is BFNoS with a Dual-BFWS backend, comment **line 348**.
-
-- **To run the BFNoS frontend on its own**, comment **lines 345 to 376**, ensuring that the time and memory budget are set as desired. Normally this would be done not using either threshold, as the overall time limit is set by the experimental setup.
+<ins>**Experiments**
 
 We recommend using [Lab](https://lab.readthedocs.io/en/stable/index.html) for conducting experiments.
 
