@@ -29,7 +29,7 @@ Build LAPKT by following the [Build instructions](developersguide/build.md). It 
 
 - Also required for build:
 	
-		pip install python-is-python3
+		sudo apt install python-is-python3
 	
 	Because somewhere in the new _fd_translate_ files, _python_ is used instead of _python3_, so this is a suboptimal and temporary fix.
 
