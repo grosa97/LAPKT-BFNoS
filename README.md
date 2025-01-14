@@ -21,7 +21,7 @@ Build LAPKT by following the [Build instructions](developersguide/build.md). It 
 
 **Important**: Additional requirements before building.
 
-- Update submodule, run from base directory:
+- Update submodule, run from project directory:
 		
 		git submodule update --init --recursive
 	
